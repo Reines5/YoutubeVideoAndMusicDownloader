@@ -55,7 +55,8 @@ class YouTubeDownloader:
 
         # Format Seçimi
         tk.Label(self.root, text="Format").pack(pady=5)
-        format_menu = ttk.Combobox(self.root, textvariable=self.format_choice, values=["mp4", "m4a"], state="readonly")
+        # Format Seçimi kısmında
+        format_menu = ttk.Combobox(self.root, textvariable=self.format_choice, values=["mp4", "m4a", "mp3"], state="readonly")
         format_menu.pack()
 
         # İndirme Konumu
@@ -103,7 +104,6 @@ class YouTubeDownloader:
         url = self.video_url.get()
         path = self.download_path.get()
 
-        # 👇 Burada base_path tanımlanıyor
         if getattr(sys, 'frozen', False):
             base_path = sys._MEIPASS
         else:
@@ -112,13 +112,25 @@ class YouTubeDownloader:
         ffmpeg_path = os.path.join(base_path, "ffmpeg_bin", "ffmpeg.exe")
 
         ydl_opts = {
-            'format': 'bestaudio/best' if format_choice == "m4a" else 'bestvideo+bestaudio/best',
             'outtmpl': os.path.join(path, '%(title)s.%(ext)s'),
-            'merge_output_format': format_choice,
             'ffmpeg_location': ffmpeg_path,
             'progress_hooks': [self.hook],
             'quiet': True,
         }
+
+        if format_choice == "mp3":
+            ydl_opts['format'] = 'bestaudio/best'
+            ydl_opts['postprocessors'] = [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }]
+        elif format_choice == "m4a":
+            ydl_opts['format'] = 'bestaudio/best'
+            ydl_opts['merge_output_format'] = 'm4a'
+        else:  # mp4
+            ydl_opts['format'] = 'bestvideo+bestaudio/best'
+            ydl_opts['merge_output_format'] = 'mp4'
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
