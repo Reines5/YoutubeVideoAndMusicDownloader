@@ -53,15 +53,15 @@ source .venv/bin/activate
 
 ## ▶️ How to Run the Project
 
-After activating the virtual environment and installing "yt-dlp", run:
+After activating the virtual environment and installing `yt-dlp`, run:
 ```
 python main.py
 ```
 The program will ask you for the YouTube URL and the desired format:
 
--mp4 → Downloads video
--m4a → Downloads audio
--mp3 → Downloads and converts audio to .mp3 (FFmpeg required)
+-`mp4` → Downloads video
+-`m4a` → Downloads audio
+-`mp3` → Downloads and converts audio to .mp3 (FFmpeg required)
 
 💡 If you plan to download mp3, make sure you have FFmpeg installed and added to your system PATH:
 
@@ -82,8 +82,8 @@ pip install pyinstaller
 pyinstaller --onefile --console main.py
 ```
 
-- --onefile: packages everything into a single .exe file
-- --console: keeps the terminal window for interaction
+- `--onefile`: packages everything into a single .exe file
+- `--console`: keeps the terminal window for interaction
 - 
 The output file will be created in the dist/ folder.
 
