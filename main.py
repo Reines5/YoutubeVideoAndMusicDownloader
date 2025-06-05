@@ -10,28 +10,6 @@ import sys
 class YouTubeDownloader:
     url = 'https://www.youtube.com/watch?v=MohURRfBojg'  # İndirmek istediğin video URL'sini buraya yaz
     path = './videos'
-    
-    # def mp4_download():
-    #     ydl_opts = {
-    #     'format': 'bestvideo+bestaudio/best',  # En iyi video ve ses kalitesini seç
-    #     'outtmpl': os.path.join(path, '%(title)s.%(ext)s'),       # Kaydedilen dosyanın ismi: video başlığı + uzantı
-    #     'merge_output_format': 'mp4',
-    #     'ffmpeg_location': './ffmpeg_bin/ffmpeg.exe',          # Video ve sesi mp4 olarak birleştir
-    #     }
-
-    #     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-    #         ydl.download([url])
-
-    # def mp3_download():
-    #     ydl_opts = {
-    #         'format': 'bestaudio',
-    #         'outtmpl': os.path.join(path, '%(title)s.%(ext)s'),
-    #         'merge_output_format': 'mp3',
-    #         'ffmpeg_location': './ffmpeg_bin/ffmpeg.exe', 
-    #     }
-
-    #     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-    #         ydl.download([url])
 
     def __init__(self, root):
         self.root = root
@@ -43,6 +21,7 @@ class YouTubeDownloader:
         self.download_path = tk.StringVar()
         self.format_choice = tk.StringVar(value="mp4")
         self.downloading = False
+        self.cancelled = False
         self.ydl = None
 
         self.create_widgets()
@@ -142,16 +121,18 @@ class YouTubeDownloader:
         self.downloading = False
         self.download_btn.config(state="normal")
         self.cancel_btn.config(state="disabled")
-
+ 
     def cancel_download(self):
-        if self.downloading and self.ydl:
-            self.ydl._download_retcode = 1  # indirilen iptal gibi davranması için hack
-            messagebox.showinfo("İptal", "İndirme işlemi iptal edildi.")
-            self.downloading = False
-            self.cancel_btn.config(state="disabled")
-            self.download_btn.config(state="normal")
+    if self.downloading:
+        self.cancelled = True
+        messagebox.showinfo("İptal", "İndirme işlemi iptal edildi.")
+        self.downloading = False
+        self.cancel_btn.config(state="disabled")
+        self.download_btn.config(state="normal")
 
     def hook(self, d):
+        if self.cancelled:
+            raise Exception("Kullanıcı tarafından iptal edildi.")
         if d['status'] == 'downloading':
             total = d.get('total_bytes') or d.get('total_bytes_estimate', 0)
             downloaded = d.get('downloaded_bytes', 0)
