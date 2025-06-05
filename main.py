@@ -123,12 +123,12 @@ class YouTubeDownloader:
         self.cancel_btn.config(state="disabled")
  
     def cancel_download(self):
-    if self.downloading:
-        self.cancelled = True
-        messagebox.showinfo("İptal", "İndirme işlemi iptal edildi.")
-        self.downloading = False
-        self.cancel_btn.config(state="disabled")
-        self.download_btn.config(state="normal")
+        if self.downloading:
+            self.cancelled = True
+            messagebox.showinfo("İptal", "İndirme işlemi iptal edildi.")
+            self.downloading = False
+            self.cancel_btn.config(state="disabled")
+            self.download_btn.config(state="normal")
 
     def hook(self, d):
         if self.cancelled:
