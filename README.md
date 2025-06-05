@@ -28,7 +28,7 @@ This is a simple Python-based YouTube downloader that allows users to download v
 ### 1. Clone the repository
 
 ```
-git clone https://github.com/yourusername/youtube-downloader.git
+git clone https://github.com/Reines5/YoutubeVideoAndMusicDownloader.git
 cd youtube-downloader
 ```
 
