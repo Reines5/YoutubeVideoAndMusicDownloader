@@ -8,8 +8,6 @@ import sys
 
 
 class YouTubeDownloader:
-    url = 'https://www.youtube.com/watch?v=MohURRfBojg'  # İndirmek istediğin video URL'sini buraya yaz
-    path = './videos'
 
     def __init__(self, root):
         self.root = root
@@ -32,25 +30,24 @@ class YouTubeDownloader:
         tk.Label(self.root, text="Video URL").pack(pady=5)
         tk.Entry(self.root, textvariable=self.video_url, width=60).pack()
 
-        # Format Seçimi
+        # Format Choice
         tk.Label(self.root, text="Format").pack(pady=5)
-        # Format Seçimi kısmında
         format_menu = ttk.Combobox(self.root, textvariable=self.format_choice, values=["mp4", "m4a", "mp3"], state="readonly")
         format_menu.pack()
 
-        # İndirme Konumu
-        tk.Button(self.root, text="Klasör Seç", command=self.select_folder).pack(pady=5)
+        # Download Path
+        tk.Button(self.root, text="Select a folder", command=self.select_folder).pack(pady=5)
         tk.Label(self.root, textvariable=self.download_path).pack()
 
         # Progress Bar
         self.progress = ttk.Progressbar(self.root, length=400)
         self.progress.pack(pady=10)
 
-        # Butonlar
-        self.download_btn = tk.Button(self.root, text="İndir", command=self.start_download)
+        # Butons
+        self.download_btn = tk.Button(self.root, text="Download", command=self.start_download)
         self.download_btn.pack(side="left", padx=40)
 
-        self.cancel_btn = tk.Button(self.root, text="İptal Et", command=self.cancel_download, state="disabled")
+        self.cancel_btn = tk.Button(self.root, text="Cancel", command=self.cancel_download, state="disabled")
         self.cancel_btn.pack(side="right", padx=40)
 
     def select_folder(self):
@@ -64,10 +61,10 @@ class YouTubeDownloader:
         path = self.download_path.get().strip()
 
         if not url:
-            messagebox.showerror("Hata", "Lütfen bir video URL'si girin.")
+            messagebox.showerror("Error", "Please input a video URL.")
             return
         if not path or not os.path.isdir(path):
-            messagebox.showerror("Hata", "Lütfen geçerli bir klasör seçin.")
+            messagebox.showerror("Error", "Please select a valid folder.")
             return
 
         self.progress["value"] = 0
@@ -116,7 +113,7 @@ class YouTubeDownloader:
                 self.ydl = ydl
                 ydl.download([url])
         except Exception as e:
-            messagebox.showerror("Hata", str(e))
+            messagebox.showerror("Error", str(e))
 
         self.downloading = False
         self.download_btn.config(state="normal")
@@ -125,14 +122,14 @@ class YouTubeDownloader:
     def cancel_download(self):
         if self.downloading:
             self.cancelled = True
-            messagebox.showinfo("İptal", "İndirme işlemi iptal edildi.")
+            messagebox.showinfo("Cancel", "Download canceled.")
             self.downloading = False
             self.cancel_btn.config(state="disabled")
             self.download_btn.config(state="normal")
 
     def hook(self, d):
         if self.cancelled:
-            raise Exception("Kullanıcı tarafından iptal edildi.")
+            raise Exception("Canceled by the user.")
         if d['status'] == 'downloading':
             total = d.get('total_bytes') or d.get('total_bytes_estimate', 0)
             downloaded = d.get('downloaded_bytes', 0)
