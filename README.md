@@ -93,7 +93,8 @@ The output file will be created in the dist/ folder.
 -If the video format you selected isn't available, yt-dlp will choose the closest match.
 
 ## 📝 License
-This project is open-source and licensed under the MIT License.
+
+This project is licensed under the [MIT License](LICENSE).
 
 ## 📬 Contact
 Feel free to open an issue if you find bugs or want to suggest improvements.
