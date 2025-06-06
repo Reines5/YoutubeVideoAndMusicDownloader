@@ -84,7 +84,7 @@ pyinstaller --onefile --console main.py
 
 - `--onefile`: packages everything into a single .exe file
 - `--console`: keeps the terminal window for interaction
-- 
+  
 The output file will be created in the dist/ folder.
 
 ## ❗ Notes
