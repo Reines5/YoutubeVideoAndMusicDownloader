@@ -9,7 +9,7 @@ class YouTubeDownloader:
 
     def __init__(self, root):
         self.root = root
-        self.root.title("YouTube Video & Audio Downloader")
+        self.root.title("YouTube Video & Audio Downloader v1.1")
         self.root.geometry("500x450")
         self.root.resizable(False, False)
 
@@ -23,59 +23,68 @@ class YouTubeDownloader:
         self.create_widgets()
 
     def create_widgets(self):
-        # Video URL input
+        self.root.columnconfigure(0, weight=1, minsize=250)
+        self.root.columnconfigure(1, weight=1, minsize=250)
+
+        # 1st Row: Video URL Entry (with placeholder)
         self.video_url = tk.StringVar()
-        tk.Label(self.root, text="YouTube Video URL").pack(pady=5)
-        tk.Entry(self.root, textvariable=self.video_url, width=60).pack()
+        self.url_entry = tk.Entry(self.root, textvariable=self.video_url, width=30, fg='grey')
+        self.url_entry.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+        self.url_entry.insert(0, "Please enter video URL (Please press Enter!)")
+        self.url_entry.bind("<FocusIn>", self.clear_url_placeholder)
+        self.url_entry.bind("<FocusOut>", self.add_url_placeholder)
+        self.url_entry.bind("<FocusOut>", self.on_url_entry_change)
+        self.url_entry.bind("<Return>", self.on_url_entry_change)
 
-        # Video title input (auto-filled, editable)
+        # 2nd Row: Video Title Entry (with placeholder)
         self.video_title = tk.StringVar()
-        tk.Label(self.root, text="Video Title (editable)").pack(pady=5)
-        self.title_entry = tk.Entry(self.root, textvariable=self.video_title, width=60)
-        self.title_entry.pack()
+        self.title_entry = tk.Entry(self.root, textvariable=self.video_title, width=30, fg='grey')
+        self.title_entry.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+        self.title_entry.insert(0, "Video Title (Editable)")
+        self.title_entry.bind("<FocusIn>", self.clear_title_placeholder)
+        self.title_entry.bind("<FocusOut>", self.add_title_placeholder)
 
-        # Format selection (mp4, m4a, mp3)
-        tk.Label(self.root, text="Download Format").pack(pady=5)
+        # 3rd Row: Download Folder
+        tk.Button(self.root, text="Choose Download Folder", command=self.select_folder).grid(row=2, column=0, padx=10, pady=10, sticky="ew")
+        tk.Label(self.root, textvariable=self.download_path).grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+
+        # 4th Row: Video Format
+        tk.Label(self.root, text="Video Format").grid(row=3, column=0, padx=10, pady=10, sticky="ew")
         format_menu = ttk.Combobox(self.root, textvariable=self.format_choice, values=["mp4", "m4a", "mp3"], state="readonly")
-        format_menu.pack()
+        format_menu.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
         format_menu.bind("<<ComboboxSelected>>", lambda e: self.on_format_change())
 
-        # Quality selection (only visible for mp4)
-        tk.Label(self.root, text="Video Quality", name="quality_label").pack(pady=5)
+        # 5th Row: Video Quality
+        tk.Label(self.root, text="Video Quality", name="quality_label").grid(row=4, column=0, padx=10, pady=10, sticky="ew")
         self.quality_choice = tk.StringVar()
         self.quality_menu = ttk.Combobox(self.root, textvariable=self.quality_choice, state="readonly")
-        self.quality_menu.pack()
+        self.quality_menu.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
 
-        # Audio format selection (only visible for mp4)
+        # 6th Row: Audio Format
         self.audio_format_label = tk.Label(self.root, text="Audio Format (for MP4)")
-        self.audio_format_label.pack(pady=5)
-        self.audio_format_choice = tk.StringVar(value="m4a")  # Default is m4a
+        self.audio_format_label.grid(row=5, column=0, padx=10, pady=10, sticky="ew")
+        self.audio_format_choice = tk.StringVar(value="m4a")
         self.audio_format_menu = ttk.Combobox(
             self.root,
             textvariable=self.audio_format_choice,
             values=["m4a", "mp3"],
             state="readonly"
         )
-        self.audio_format_menu.pack()
+        self.audio_format_menu.grid(row=5, column=1, padx=10, pady=10, sticky="ew")
 
-        # Download folder selection
-        tk.Button(self.root, text="Choose Download Folder", command=self.select_folder).pack(pady=5)
-        tk.Label(self.root, textvariable=self.download_path).pack()
-
-        # Progress bar
+        # 7th Row: Progress Bar and Info Label
         self.progress = ttk.Progressbar(self.root, length=400)
-        self.progress.pack(pady=10)
+        self.progress.grid(row=6, column=0, columnspan=2, padx=10, pady=5, sticky="ew")
 
-        # Download and Cancel buttons
+        self.progress_label = tk.Label(self.root, text="", fg="green")
+        self.progress_label.grid(row=7, column=0, columnspan=2, padx=10, pady=(0,10), sticky="ew")
+
+        # 8th Row: Download and Cancel Download buttons
         self.download_btn = tk.Button(self.root, text="Download", command=self.start_download)
-        self.download_btn.pack(side="left", padx=40)
+        self.download_btn.grid(row=8, column=0, padx=10, pady=10, sticky="ew")
 
         self.cancel_btn = tk.Button(self.root, text="Cancel Download", command=self.cancel_download, state="disabled")
-        self.cancel_btn.pack(side="right", padx=40)
-
-        # Update quality list when URL input loses focus
-        url_entry = self.root.children[list(self.root.children)[1]]
-        url_entry.bind("<FocusOut>", lambda e: self.fetch_qualities())
+        self.cancel_btn.grid(row=8, column=1, padx=10, pady=10, sticky="ew")
 
     def select_folder(self):
         path = filedialog.askdirectory()
@@ -111,17 +120,17 @@ class YouTubeDownloader:
         quality_label = self.root.nametowidget(".quality_label")
 
         # Hide all relevant widgets first
-        quality_label.pack_forget()
-        self.quality_menu.pack_forget()
-        self.audio_format_label.pack_forget()
-        self.audio_format_menu.pack_forget()
+        quality_label.grid_forget()
+        self.quality_menu.grid_forget()
+        self.audio_format_label.grid_forget()
+        self.audio_format_menu.grid_forget()
 
         if fmt == "mp4":
             # Show quality and audio format widgets in correct order
-            quality_label.pack(pady=5)
-            self.quality_menu.pack()
-            self.audio_format_label.pack(pady=5)
-            self.audio_format_menu.pack()
+            quality_label.grid(row=4, column=0, padx=10, pady=10, sticky="ew")
+            self.quality_menu.grid(row=4, column=1, padx=10, pady=10, sticky="ew")
+            self.audio_format_label.grid(row=5, column=0, padx=10, pady=10, sticky="ew")
+            self.audio_format_menu.grid(row=5, column=1, padx=10, pady=10, sticky="ew")
             self.root.geometry("500x450")
             self.fetch_qualities()
         else:
@@ -129,7 +138,11 @@ class YouTubeDownloader:
 
     def fetch_qualities(self):
         url = self.video_url.get().strip()
-        if not url or self.format_choice.get() != "mp4":
+        # Check placeholder and format
+        if not url or url == "Please enter video URL (Please press Enter!)" or self.format_choice.get() != "mp4":
+            self.quality_menu['values'] = []
+            self.quality_choice.set("")
+            self.video_title.set("")
             return
         try:
             with yt_dlp.YoutubeDL({'quiet': True}) as ydl:
@@ -181,6 +194,7 @@ class YouTubeDownloader:
         except Exception as e:
             self.quality_menu['values'] = []
             self.quality_choice.set("")
+            self.video_title.set("")
 
     def download_video(self):
         format_choice = self.format_choice.get()
@@ -246,9 +260,12 @@ class YouTubeDownloader:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 self.ydl = ydl
                 ydl.download([url])
+            # Download successful:
+            self.progress["value"] = 100
+            self.progress_label.config(text="Download completed!")
         except Exception as e:
             messagebox.showerror("Error", str(e))
-
+            self.progress_label.config(text="")
         self.downloading = False
         self.download_btn.config(state="normal")
         self.cancel_btn.config(state="disabled")
@@ -313,12 +330,51 @@ class YouTubeDownloader:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 self.ydl = ydl
                 ydl.download([url])
+            # Download successful:
+            self.progress["value"] = 100
+            self.progress_label.config(text="Download completed!")
         except Exception as e:
             messagebox.showerror("Error", str(e))
-
+            self.progress_label.config(text="")
         self.downloading = False
         self.download_btn.config(state="normal")
         self.cancel_btn.config(state="disabled")
+
+    def clear_url_placeholder(self, event):
+        if self.url_entry.get() == "Please enter video URL (Please press Enter!)":
+            self.url_entry.delete(0, tk.END)
+            self.url_entry.config(fg='black')
+
+    def add_url_placeholder(self, event):
+        if not self.url_entry.get():
+            self.url_entry.insert(0, "Please enter video URL (Please press Enter!)")
+            self.url_entry.config(fg='grey')
+
+    def clear_title_placeholder(self, event):
+        if self.title_entry.get() == "Video Title":
+            self.title_entry.delete(0, tk.END)
+            self.title_entry.config(fg='black')
+
+    def add_title_placeholder(self, event):
+        if not self.title_entry.get():
+            self.title_entry.insert(0, "Video Title")
+            self.title_entry.config(fg='grey')
+
+    def on_url_entry_change(self, event):
+        # Reset progress bar and label
+        self.progress["value"] = 0
+        self.progress_label.config(text="")
+        url = self.video_url.get().strip()
+        # Check placeholder
+        if not url or url == "Please enter video URL":
+            self.quality_menu['values'] = []
+            self.quality_choice.set("")
+            self.video_title.set("")
+            return
+        # Update quality and title only on focus out or Enter key
+        if event.type == "9" or (event.type == "2" and event.keysym == "Return"):
+            if self.format_choice.get() == "mp4":
+                self.fetch_qualities()
 
 # Application entry point
 if __name__ == "__main__":

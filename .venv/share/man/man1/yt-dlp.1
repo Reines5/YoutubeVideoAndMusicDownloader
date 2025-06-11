@@ -2654,8 +2654,8 @@ The following extractors use this feature:
 By default, the video primary language metadata is preferred, with a
 fallback to \f[V]en\f[R] translated.
 See
-youtube.py (https://github.com/yt-dlp/yt-dlp/blob/c26f9b991a0681fd3ea548d535919cec1fbbd430/yt_dlp/extractor/youtube.py#L381-L390)
-for list of supported content language codes
+youtube/_base.py (https://github.com/yt-dlp/yt-dlp/blob/415b4c9f955b1a0391204bd24a7132590e7b3bdb/yt_dlp/extractor/youtube/_base.py#L402-L409)
+for the list of supported content language codes
 .IP \[bu] 2
 \f[V]skip\f[R]: One or more of \f[V]hls\f[R], \f[V]dash\f[R] or
 \f[V]translated_subs\f[R] to skip extraction of the m3u8 manifests, dash
@@ -2667,7 +2667,7 @@ respectively
 The currently available clients are \f[V]web\f[R], \f[V]web_safari\f[R],
 \f[V]web_embedded\f[R], \f[V]web_music\f[R], \f[V]web_creator\f[R],
 \f[V]mweb\f[R], \f[V]ios\f[R], \f[V]android\f[R], \f[V]android_vr\f[R],
-\f[V]tv\f[R] and \f[V]tv_embedded\f[R].
+\f[V]tv\f[R], \f[V]tv_simply\f[R] and \f[V]tv_embedded\f[R].
 By default, \f[V]tv,ios,web\f[R] is used, or \f[V]tv,web\f[R] is used
 when authenticating with cookies.
 The \f[V]web_music\f[R] client is added for \f[V]music.youtube.com\f[R]

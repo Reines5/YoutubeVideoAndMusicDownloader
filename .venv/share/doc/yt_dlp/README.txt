@@ -2207,26 +2207,27 @@ youtube
 -   lang: Prefer translated metadata (title, description etc) of this
     language code (case-sensitive). By default, the video primary
     language metadata is preferred, with a fallback to en translated.
-    See youtube.py for list of supported content language codes
+    See youtube/_base.py for the list of supported content language
+    codes
 -   skip: One or more of hls, dash or translated_subs to skip extraction
     of the m3u8 manifests, dash manifests and auto-translated subtitles
     respectively
 -   player_client: Clients to extract video data from. The currently
     available clients are web, web_safari, web_embedded, web_music,
-    web_creator, mweb, ios, android, android_vr, tv and tv_embedded. By
-    default, tv,ios,web is used, or tv,web is used when authenticating
-    with cookies. The web_music client is added for music.youtube.com
-    URLs when logged-in cookies are used. The web_embedded client is
-    added for age-restricted videos but only works if the video is
-    embeddable. The tv_embedded and web_creator clients are added for
-    age-restricted videos if account age-verification is required. Some
-    clients, such as web and web_music, require a po_token for their
-    formats to be downloadable. Some clients, such as web_creator, will
-    only work with authentication. Not all clients support
-    authentication via cookies. You can use default for the default
-    clients, or you can use all for all clients (not recommended). You
-    can prefix a client with - to exclude it, e.g.
-    youtube:player_client=default,-ios
+    web_creator, mweb, ios, android, android_vr, tv, tv_simply and
+    tv_embedded. By default, tv,ios,web is used, or tv,web is used when
+    authenticating with cookies. The web_music client is added for
+    music.youtube.com URLs when logged-in cookies are used. The
+    web_embedded client is added for age-restricted videos but only
+    works if the video is embeddable. The tv_embedded and web_creator
+    clients are added for age-restricted videos if account
+    age-verification is required. Some clients, such as web and
+    web_music, require a po_token for their formats to be downloadable.
+    Some clients, such as web_creator, will only work with
+    authentication. Not all clients support authentication via cookies.
+    You can use default for the default clients, or you can use all for
+    all clients (not recommended). You can prefix a client with - to
+    exclude it, e.g. youtube:player_client=default,-ios
 -   player_skip: Skip some network requests that are generally needed
     for robust extraction. One or more of configs (skip client configs),
     webpage (skip initial webpage), js (skip js player), initial_data
